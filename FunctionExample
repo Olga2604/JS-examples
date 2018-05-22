@@ -1,0 +1,23 @@
+// Cool function which gets a color scale using chroma.js and then shuffle these colors. Good to use for charts.
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const a = array;
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return array;
+},
+getColor(arr, index) {
+      if (arr.length > 10) {
+        const col = [
+        ...chroma.scale(['#1174f5', '#26C6DA', '#FFF59D']).correctLightness().colors(),
+        ...chroma.scale(['#FFF59D', '#F44336']).correctLightness().colors()
+        ];
+        const bigScheme = this.shuffle(chroma.scale(col).colors(arr.length));
+        return bigScheme[index];
+      }
+      const smallScheme = chroma.scale(['#1A237E', '#1174f5', '#4DD0E1', '#A5D6A7', '#FFF9C4']).correctLightness().colors(arr.length);
+      return smallScheme[index];
+    },
+  },
