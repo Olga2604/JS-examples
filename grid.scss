@@ -1,0 +1,123 @@
+// Here is an example of creating my own grid when you don't want to use Bootstrap.
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  //padding: 0 3px;
+}
+.cell {
+  flex: 1;
+  //padding: 0 12px;
+}
+@for $i from 0 through 12 {
+  .cell-#{$i} {
+    flex: 0 0 100% / 12 * $i;
+    padding: 0 12px;
+  }
+  .order-#{$i} {
+    order: $i;
+  }
+  .offset-#{$i} {
+    margin-left: 100% / 12 * $i;
+  }
+}
+@for $i from 0 through 12 {
+  .cell-xs-#{$i} {
+    flex: 0 0 100%;
+    padding: 0 12px;
+  }
+  .cell-sm-#{$i} {
+    flex: 0 0 100%;
+    padding: 0 12px;
+  }
+  .cell-md-#{$i} {
+    flex: 0 0 100%;
+    padding: 0 12px;
+  }
+  .cell-lg-#{$i} {
+    flex: 0 0 100%;
+    padding: 0 12px;
+  }
+}
+@media (max-width: 767px) {
+  @for $i from 0 through 12 {
+    .cell-xs-#{$i} {
+      flex: 0 0 100% / 12 * $i;
+    }
+    .order-xs-#{$i} {
+      order: $i;
+    }
+    .offset-xs-#{$i} {
+      margin-left: 100% / 12 * $i;
+    }
+  }
+  .grid {
+    padding: 0 15px;
+  }
+  *[padding3px] {
+    padding: 0 0 10px 0;
+  }
+}
+@media (min-width: 768px) {
+  @for $i from 0 through 12 {
+    .cell-sm-#{$i} {
+      flex: 0 0 100% / 12 * $i;
+    }
+    .order-sm-#{$i} {
+      order: $i;
+    }
+    .offset-sm-#{$i} {
+      margin-left: 100% / 12 * $i;
+    }
+  }
+  .grid {
+    padding: 0 30px;
+  }
+}
+@media (min-width: 992px) {
+  @for $i from 0 through 12 {
+    .cell-md-#{$i} {
+      flex: 0 0 100% / 12 * $i;
+    }
+    .order-md-#{$i} {
+      order: $i;
+    }
+    .offset-md-#{$i} {
+      margin-left: 100% / 12 * $i;
+    }
+  }
+  .grid {
+    padding: 0 36px;
+  }
+}
+@media (min-width: 1200px) {
+  @for $i from 0 through 12 {
+    .cell-lg-#{$i} {
+      flex: 0 0 100% / 12 * $i;
+    }
+    .order-lg-#{$i} {
+      order: $i;
+    }
+    .offset-lg-#{$i} {
+      margin-left: 100% / 12 * $i;
+    }
+  }
+  .grid {
+    padding: 0 36px;
+  }
+}
+
+*[padding3px] {
+  padding: 0 3px 15px 0;
+}
+
+*[remove-side-padding] {
+  padding-left: 0;
+  padding-right: 0;
+}
+*[remove-left-padding] {
+  padding-left: 0;
+}
+*[remove-right-padding] {
+  padding-right: 0;
+}
