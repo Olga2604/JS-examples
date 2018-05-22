@@ -3,11 +3,11 @@
 .grid {
   display: flex;
   flex-wrap: wrap;
-  //padding: 0 3px;
+  padding: 0 3px;
 }
 .cell {
   flex: 1;
-  //padding: 0 12px;
+  padding: 0 12px;
 }
 @for $i from 0 through 12 {
   .cell-#{$i} {
@@ -106,6 +106,8 @@
     padding: 0 36px;
   }
 }
+
+// Switch off paddings: comment paddings in the cell and grid, then use these selectors
 
 *[padding3px] {
   padding: 0 3px 15px 0;
