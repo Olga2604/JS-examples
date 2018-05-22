@@ -1,0 +1,187 @@
+<template>
+  <div class="main">
+    <div class="grid">
+      <div class="cell-10 pd-top">
+        <h2 class="none-xs">
+          <router-link to="/reports" class="underlined">Reports</router-link>
+        </h2>
+        <h1>Active users</h1>
+      </div>
+      <div class="cell-12">
+        <div class="grid">
+          <div class="cell-6">
+            <p class="pd-20-top pd-7-bottom">Period</p>
+            <div class="datepicker">
+              <datepicker v-model="periodStart"
+                          input-class="datepicker-input left-input"
+                          minimum-view="month"
+                          format="MMMM yyyy"
+                          placeholder="Choose date"
+                          language="ru"/>
+              <div class="dash">—</div>
+              <datepicker v-model="periodEnd"
+                          input-class="datepicker-input right-input"
+                          minimum-view="month"
+                          format="MMMM yyyy"
+                          placeholder="Choose date"
+                          language="ru"/>
+            </div>
+          </div>
+          <div class="cell-sm-6 bt-group bt-side-group pd-top-41">
+            <button class="button-normal bt-border-blue"
+                    :class="activeChart"
+                    @click="showInactiveUsers = false">
+              All users
+            </button>
+            <button class="button-normal bt-border-blue"
+                    :class="activeInactiveUsersChart"
+                    @click="showInactiveUsers = true">
+              InactiveUsers
+            </button>
+          </div>
+        </div>
+      </div>
+      <chart v-if="isChartData === true && showInactiveUsers === false"
+             :options="options" 
+             :chart-data="setData" />
+      <chart v-if="isChartData === true && showInactiveUsers === true"
+             :options="options" 
+             :chart-data="setInactiveUsersData" />
+      <div class="chart-stub mg-20-top" v-if="isChartData === false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 56 56">
+          <g fill="none" fill-rule="evenodd">
+            <circle cx="28" cy="28" r="28" fill="#E6E6E6"/>
+            <path fill="#FFF" fill-rule="nonzero" d="M8.94827586,2.66666667 C10.7327586,2.66666667 12.3491379,3.41333333 13.5193966,4.62 L10.2413793,8 L18,8 L18,0 L15.3491379,2.73333333 C13.7133621,1.04666667 11.450431,0 8.94827586,0 C4.39008621,0 0.627155172,3.48 0,8 L2.61206897,8 C3.21336207,4.96 5.81896552,2.66666667 8.94827586,2.66666667 Z M16.6220698,14.9641728 C17.4965695,13.8198103 18.0883362,12.4668072 18.3053173,11 L15.6489423,11 C15.03745,13.8830348 12.3876501,16.0579557 9.20526015,16.0579557 C7.39050886,16.0579557 5.74671241,15.3498419 4.55660377,14.2054795 L7.89022298,11 L0,11 L0,18.5869336 L2.69582619,15.9947313 C4.3593482,17.5943098 6.66066324,18.5869336 9.20526015,18.5869336 C11.2435678,18.5869336 13.1240709,17.9420443 14.649514,16.8609062 L21.0405946,23 L23,21.1159115 L16.6220698,14.9641728 Z" transform="translate(17 16)"/>
+          </g>
+        </svg>
+        <p class="stub-message">There is no data for this period</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import moment from 'moment';
+import Datepicker from 'vuejs-datepicker';
+import { mapGetters, mapActions } from 'vuex';
+import Chart from '../charts/Chart';
+
+
+export default {
+  data() {
+    return {
+      periodStart: new Date(),
+      periodEnd: new Date(),
+      showInactiveUsers: false,
+    };
+  },
+  components: {
+    Datepicker,
+    Chart,
+  },
+  computed: {
+    ...mapGetters([
+    'getChartLabels',
+    'getChartActiveUsersData',
+    'getChartActiveUsersMGPUData'
+    ]),
+    options() {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        tooltips: {
+          mode: 'index',
+          intersect: false,
+        },
+        scales: {
+          xAxes: [{
+            stacked: true,
+            categoryPercentage: 0.5,
+            barPercentage: 0.25,
+          }],
+          yAxes: [{
+            stacked: true,
+            ticks: {
+              min: 0,
+            },
+          }],
+        },
+        legend: {
+          labels: {
+            fontSize: 10,
+            boxWidth: 10,
+          },
+        },
+        layout: {
+          padding: {
+            top: 20,
+          },
+        },
+      };
+    },
+    setData() {
+      return {
+        labels: this.getChartLabels,
+        datasets: [
+          {
+            label: 'Active Users',
+            backgroundColor: '#1174f5',
+            data: this.getChartActiveUsersData,
+          },
+        ],
+      };
+    },
+    setInactiveUsersData() {
+      return {
+        labels: this.getChartLabels,
+        datasets: [
+          {
+            label: 'Inactive Users',
+            backgroundColor: '#1174f5',
+            data: this.getChartInactiveUsersData,
+          },
+        ],
+      };
+    },
+    activeChart() {
+      return this.showInactiveUsers === false
+         ? 'bt-border-fill-blue';
+         : '';
+    },
+    activeInactiveUsersChart() {
+      return this.showInactiveUsers === true
+         ? 'bt-border-fill-blue';
+         : '';
+    },
+    isChartData() {
+      if (this.getChartActiveUsersData.length > 0 || this.getChartInactiveUsersData.length > 0) {
+        return true;
+      }
+      return false;
+    },
+  },
+  mounted() {
+    this.report();
+  },
+  watch: {
+    periodStart() {
+      this.report();
+    },
+    periodEnd() {
+      this.report();
+    },
+    showInactiveUsers() {
+      this.report();
+    },
+  },
+  methods: {
+    ...mapActions(['loadAllUsersReport']),
+    report() {
+      this.loadAllUsersReport({ params: {
+        start_date: moment(this.periodStart).startOf('month').format('YYYY-MM-DD'),
+        end_date: moment(this.periodEnd).endOf('month').format('YYYY-MM-DD'),
+      } });
+    },
+  },
+};
+</script>
